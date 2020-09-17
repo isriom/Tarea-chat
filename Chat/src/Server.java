@@ -1,39 +1,28 @@
 import java.net.*;
 import java.io.*;
-import java.util.List;
 import javax.swing.*;
 
 public class Server {
     public Server(int portnumber ) {
         try {
-            ServerSocket port=  new ServerSocket(portnumber);
-            Main.recieve("port_accepted");
-            Server.Comunication(port);
-        } catch (BindException e){
-            System.out.println("This port connect to a working server");
-            Main.recieve("connect?");
-            e.printStackTrace();
+            ServerSocket socket=  new ServerSocket(portnumber,50,InetAddress.getLocalHost());
+            System.out.println(socket);
+            System.out.println(socket.getLocalSocketAddress());
+            Server.Comunication(socket);
         } catch (IOException e) {
-            System.out.println("This port see that is not working ");
-            Main.recieve("port_error");
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            System.out.println("This port see that is out of range");
-            Main.recieve("port_error");
             e.printStackTrace();
         }
     }
     public static JFrame screen=new JFrame("server");//creating instance of JFrame
-
-    public static void Comunication(ServerSocket socketport) throws IOException {
-        DefaultListModel<Socket> Users = new DefaultListModel<>();
+    public static void listen(ServerSocket socket) throws IOException {
+        Users.addElement(socket.accept());
+        }
+    public static ServerSocket publicsocket;
+    public static DefaultListModel<Socket> Users = new DefaultListModel<>();
+    public static void Comunication(ServerSocket socket) {
         boolean WaitUser= true;
-        Socket clientSocket = new Socket();
-        clientSocket.connect(socketport.getLocalSocketAddress());
-        //Users.addElement(clientSocket);
-
-        JList<Socket> userslist= new JList<>(Users);
-        userslist.setBounds(100,100, 250,100);
+        JList<Socket> userslist= new JList<>(Server.Users);
+        userslist.setBounds(100,100, 350,100);
         Server.screen.setSize(400,400);
         Server.screen.setLayout(null);
         Server.screen.setVisible(true);
@@ -41,15 +30,16 @@ public class Server {
 
         try {
             while (WaitUser) {
-                Users.addElement(socketport.accept());
+                Users.addElement(socket.accept());
+                WaitUser= Users.size()==0;
                 System.out.println(Users);
-                WaitUser= Users.size()<3;
+                System.out.println("Users");
 
             }
-            System.out.println("This port see that is out of range");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        Server.publicsocket=socket;
     }
 }
