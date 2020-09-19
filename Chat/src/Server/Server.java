@@ -1,5 +1,7 @@
 package Server;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.*;
@@ -14,7 +16,7 @@ public class Server {
     public static JFrame serverScreen;
     public static DefaultListModel<Users> UsersList=new DefaultListModel<Users>();
     public static DefaultListModel<String> usersNameList= new DefaultListModel<>();
-
+    public static DefaultListModel<String> log= new DefaultListModel<>();
 
     public static void main(String[] args) {
         JFrame initScreen= new JFrame("server");
@@ -46,6 +48,8 @@ public class Server {
         initScreen.setSize(400,400);
         initScreen.setLayout(null);
         initScreen.setVisible(true);
+        initScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
     }
     public static void StartSocket(int portnumber) {
         try {
@@ -75,9 +79,11 @@ public class Server {
         JLabel textBox=new JLabel("State:Server online");
         JButton addButton=new JButton("Add client");
         JList<String> connectedUsers= new JList<>(usersNameList);
-        addButton.setBounds(300,350, 100,50);
+        JList<String> chatLog= new JList<>(log);
+        addButton.setBounds(30,260, 100,50);
         textBox.setBounds(50,10, 150,100);
-        connectedUsers.setBounds(20,150, 250,100);
+        connectedUsers.setBounds(20,100, 150,150);
+        chatLog.setBounds(200,50, 250,300);
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -93,23 +99,52 @@ public class Server {
         serverScreen.add(textBox);
         serverScreen.add(connectedUsers);
         serverScreen.add(addButton);
+        serverScreen.add(chatLog);
         serverScreen.setSize(400,400);
         serverScreen.setLayout(null);
         serverScreen.setVisible(true);
         Server.serverScreen=serverScreen;
+        serverScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
     public static void addUser() {
         try {
             System.out.println("asd");
             Socket clientSocket = Server.publicsocket.accept();
             System.out.println("asd");
-            PrintWriter output = new PrintWriter(clientSocket.getOutputStream());
-            BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
+            DataInputStream input = new DataInputStream(clientSocket.getInputStream());
+            System.out.println("asd");
+
             Users user = new Users(clientSocket, output, input);
+            System.out.println("asd");
+            user.start();
             System.out.println(user.getUserName());
             System.out.println(user);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    public static void RecieveMsg(Users user,String msg) throws IOException {
+        for (int idUser=0;(idUser!=UsersList.getSize());idUser++){
+            boolean condition1=idUser>=UsersList.getSize();
+            if(condition1){
+            break;}
+            if (UsersList.elementAt(idUser)!=user){
+                SendMsg(UsersList.elementAt(idUser),msg);
+            }else{
+                log.addElement(msg);
+                SendMsg(user,msg);
+            }
+        }
+    }
+    public static void SendMsg(@NotNull Users user, String msg) {
+        DataOutputStream out = user.getOut();
+        try {
+            out.writeUTF(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+            UsersList.removeElement(user);
+            usersNameList.removeElement(user.getUserName());
         }
     }
 }

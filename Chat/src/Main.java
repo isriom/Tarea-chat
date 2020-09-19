@@ -2,19 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Main {
     private static Socket userSocket;
-    private static PrintWriter out;
-    private static BufferedReader in;
+    private static DataOutputStream out;
+    private static DataInputStream in;
     private static String name;
+    public static DefaultListModel<String> log= new DefaultListModel<>();
+
 
     public static void main(String[] args) {
         JFrame chatScreen=new JFrame("Client");
@@ -59,30 +58,70 @@ public class Main {
         chatScreen.setSize(400,400);
         chatScreen.setLayout(null);
         chatScreen.setVisible(true);
+        chatScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
 
     }
-    public static String write(){
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
-    public static void display() throws InterruptedException {
+    public static void display() throws InterruptedException, IOException {
         JFrame chatScreen=new JFrame("Client");
-        JTextArea readArea= new JTextArea();
-        readArea.setBounds(10,10, 380,300);
+        JList<String> chatlog=new JList<>(log);
+        JTextField inputBox= new JTextField();
+        JButton button=new JButton("Send");
+        chatlog.setBounds(10,10, 380,300);
+        inputBox.setBounds(10,330, 300,70);
+        button.setBounds(310,330, 100,70);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                try {
+                    String msg=inputBox.getText();
+                    out.writeUTF(name+": "+"\n"+msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         chatScreen.setSize(400,400);
+        chatScreen.add(chatlog);
+        chatScreen.add(inputBox);
+        chatScreen.add(button);
         chatScreen.setLayout(null);
         chatScreen.setVisible(true);
-        chatScreen.add(readArea);
-        Thread.sleep(2000);
-        out.println(name);
+        out.writeUTF(name);
+        chatScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
 
     }
     public static void createAccount(Socket socket, String user) throws IOException {
-        PrintWriter output = new PrintWriter(socket.getOutputStream());
-        BufferedReader input = new BufferedReader(new InputStreamReader( socket.getInputStream()));
+        DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+        DataInputStream input = new DataInputStream(socket.getInputStream());
         userSocket=socket;
         out=output;
         in=input;
         name=user;
+        out.writeUTF(name);
+        SocketListen lister= new SocketListen();
+        lister.start();
+    }
+
+
+    public static DataInputStream getIn() {
+        return in;
+    }
+}
+class SocketListen extends Thread{
+    public void run(){
+        DataInputStream input=Main.getIn();
+        while(true){
+            try {
+                String msg;
+                msg=input.readUTF();
+                Main.log.addElement(msg);
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
     }
 }
