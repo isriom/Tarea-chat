@@ -56,20 +56,30 @@ public class Users extends Thread {
         }
 
     /**
-     * Getters.
+     * Getter.
+     * @return respective object
      */
     public DataInputStream getIn() {
         return in;
     }
-
+    /**
+     * Getter.
+     * @return respective object
+     */
     public DataOutputStream getOut() {
         return out;
     }
-
+    /**
+     * Getter.
+     * @return respective object
+     */
     public Socket getUserSocket() {
         return userSocket;
     }
-
+    /**
+     * Getter.
+     * @return respective object
+     */
     public String getUserName() {
         return userName;
     }

@@ -132,7 +132,8 @@ public class Client {
     }
 
     /**
-     * Getter
+     * Getter.
+     * @return respective object.
      */
     public static DataInputStream getIn() {
         return in;

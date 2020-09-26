@@ -70,7 +70,7 @@ public class Server {
 
     /**
      * Method used when you especific a port number to start a ServerSocket.
-     * @param portnumber range 1-65535, recommended >995
+     * @param portnumber range 1-65535, recommended more than 995
      */
     public static void StartSocket(int portnumber) {
         try {
