@@ -46,12 +46,9 @@ public class Users extends Thread {
     public void run() {
         while(true){
             try {
-                System.out.println("reciviendo");
                 String msg=in.readUTF();
                 SendToServer(msg);
-                System.out.println(msg);
             } catch (Exception e) {
-                System.out.println("asdaw");
                 Server.UsersList.removeElement(this);
                 Server.usersNameList.removeElement(this.getUserName());
                 }

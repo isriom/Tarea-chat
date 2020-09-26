@@ -9,7 +9,7 @@ import java.io.*;
 import javax.swing.*;
 
 /**
- * Main Class of Server app.
+ * Client.Main Class of Server app.
  * @see Users for aux class
  */
 public class Server {
@@ -75,8 +75,6 @@ public class Server {
     public static void StartSocket(int portnumber) {
         try {
             ServerSocket socket=  new ServerSocket(portnumber,50,InetAddress.getLocalHost());
-            System.out.println(socket);
-            System.out.println(socket.getLocalSocketAddress());
             Server.publicsocket=socket;
             Server.publicsocket.setSoTimeout(20000);
             Server.ComunicationScreen(socket);
@@ -93,8 +91,6 @@ public class Server {
     public static void RestartSocket(int portnumber) {
         try {
             ServerSocket socket=  new ServerSocket(portnumber,50,InetAddress.getLocalHost());
-            System.out.println(socket);
-            System.out.println(socket.getLocalSocketAddress());
             Server.publicsocket=socket;
             Server.publicsocket.setSoTimeout(20000);
             Server.ComunicationScreen(socket);

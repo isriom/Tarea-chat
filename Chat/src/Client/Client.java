@@ -1,3 +1,5 @@
+package Client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +14,7 @@ import java.net.Socket;
  * Client main Class.
  * @see SocketListen for aux class.
  */
-public class Main {
+public class Client {
     /**
      * semi globals variables
      */
@@ -51,7 +53,7 @@ public class Main {
                     createAccount(clientSocket,intro3.getText());
                     chatScreen.setVisible(false);
                     chatScreen.dispose();
-                    Main.display();
+                    Client.display();
                 } catch (Exception e) {
                     intro1.setBackground(Color.white);
                     intro1.setText("Error,try again");
@@ -86,8 +88,8 @@ public class Main {
         JTextField inputBox= new JTextField();
         JButton button=new JButton("Send");
         chatlog.setBounds(10,10, 380,300);
-        inputBox.setBounds(10,330, 300,70);
-        button.setBounds(310,330, 100,70);
+        inputBox.setBounds(10,310, 300,70);
+        button.setBounds(310,310, 100,70);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -140,7 +142,7 @@ public class Main {
 /**
  * Aux class for client.
  * listen the socket for msg.
- * @see Main
+ * @see Client
  */
 
 class SocketListen extends Thread{
@@ -149,12 +151,12 @@ class SocketListen extends Thread{
      * recieve all the msg sent from server and send it to client.
      */
     public void run(){
-        DataInputStream input=Main.getIn();
+        DataInputStream input=Client.getIn();
         while(true){
             try {
                 String msg;
                 msg=input.readUTF();
-                Main.log.addElement(msg);
+                Client.log.addElement(msg);
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
