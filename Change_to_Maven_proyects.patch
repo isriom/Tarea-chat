@@ -1,0 +1,31 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision ea513121548cfcd4c5b5cc6fb3ef4040b0da4f0f)
++++ .idea/misc.xml	(date 1602732169763)
+@@ -1,14 +1,14 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="JavadocGenerationManager">
+-    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/Chat/Documentation" />
+-    <option name="OPTION_SCOPE" value="private" />
+-    <option name="OPTION_DOCUMENT_TAG_USE" value="true" />
+-    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="true" />
+-    <option name="OPTION_DOCUMENT_TAG_VERSION" value="true" />
+-    <option name="OPTION_INCLUDE_LIBS" value="true" />
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/pom.xml" />
++      </list>
++    </option>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="14.0.2" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="14.0.2" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
+ </project>
+\ No newline at end of file
