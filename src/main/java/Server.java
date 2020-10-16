@@ -11,7 +11,7 @@ import java.io.UTFDataFormatException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.LogManager;
+
 
 /**
  * Client.Main Class of Server app.
@@ -87,7 +87,7 @@ public class Server {
             Server.ComunicationScreen(socket);
         } catch (IOException e) {
             logger.error("The port entered could not be accessed");
-        e.printStackTrace();
+
         }
     }
 
@@ -205,7 +205,7 @@ public class Server {
             out.writeUTF(msg);
         } catch (IOException e) {
             logger.error("Inactive port. It will be deleted");
-            e.printStackTrace();
+
             UsersList.removeElement(user);
             usersNameList.removeElement(user.getUserName());
             user.getUserSocket().close();
@@ -311,7 +311,7 @@ class Users extends Thread {
             Server.RecieveMsg(this,msg);
         } catch (IOException e) {
             logger.error("Port error, or disconnected");
-            e.printStackTrace();
+
             Server.UsersList.removeElement(this);
             Server.usersNameList.removeElement(this.getUserName());
         }
