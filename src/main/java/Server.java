@@ -1,5 +1,5 @@
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,6 @@ import java.io.UTFDataFormatException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.LogManager;
 
 /**
  * Client.Main Class of Server app.
@@ -26,7 +25,7 @@ public class Server {
     public static DefaultListModel<Users> UsersList= new DefaultListModel<>();
     public static DefaultListModel<String> usersNameList= new DefaultListModel<>();
     public static DefaultListModel<String> log= new DefaultListModel<>();
-    private static Logger logger=LogManager.getLogger();
+    private static Logger logger= LogManager.getLogger();
 
 
     /**
@@ -86,7 +85,7 @@ public class Server {
             Server.publicsocket.setSoTimeout(20000);
             Server.ComunicationScreen(socket);
         } catch (IOException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -131,7 +130,6 @@ public class Server {
                 try {
                     textBox.setText("Waiting for client");
                     addUser();
-
 
                 }
                 finally {
@@ -204,7 +202,6 @@ public class Server {
             out.writeUTF(msg);
         } catch (IOException e) {
             logger.error("Inactive port. It will be deleted");
-            e.printStackTrace();
             UsersList.removeElement(user);
             usersNameList.removeElement(user.getUserName());
             user.getUserSocket().close();
