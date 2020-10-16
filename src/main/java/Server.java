@@ -86,6 +86,7 @@ public class Server {
             Server.publicsocket.setSoTimeout(20000);
             Server.ComunicationScreen(socket);
         } catch (IOException e) {
+            logger.error("The port entered could not be accessed");
         e.printStackTrace();
         }
     }
