@@ -1,4 +1,6 @@
-import org.jetbrains.annotations.NotNull;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,7 @@ public class Server {
     public static DefaultListModel<Users> UsersList= new DefaultListModel<>();
     public static DefaultListModel<String> usersNameList= new DefaultListModel<>();
     public static DefaultListModel<String> log= new DefaultListModel<>();
+
 
     /**
      * Show the initial screen for server, when you start it.
@@ -192,7 +195,7 @@ public class Server {
      * @param msg msg as string.
      * @throws IOException if fail closing the socket.
      */
-    public static void SendMsg(@NotNull Users user, String msg) throws IOException {
+    public static void SendMsg( Users user, String msg) throws IOException {
         DataOutputStream out = user.getOut();
         try {
             out.writeUTF(msg);

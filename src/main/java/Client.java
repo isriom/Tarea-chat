@@ -8,9 +8,12 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UTFDataFormatException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public class Client {
     /**
@@ -28,6 +31,7 @@ public class Client {
      * @param args not used
      * @see #createAccount
      */
+
     public static void main(String[] args) {
         final JFrame chatScreen=new JFrame("Client");
         final JLabel intro1=new JLabel("Welcome to the chat system");
@@ -54,11 +58,18 @@ public class Client {
                     chatScreen.setVisible(false);
                     chatScreen.dispose();
                     Client.display();
-                } catch (Exception e) {
-
+                } catch (UnknownHostException e) {
+                    logger.error("not supported port:"+serverport);
                     intro1.setBackground(Color.white);
                     intro1.setText("Error,try again");
                     intro1.setBounds(200,100,250,30);
+                } catch (IOException e) {
+                    intro1.setBackground(Color.white);
+                    intro1.setText("Error,try again");
+                    intro1.setBounds(200,100,250,30);
+                    logger.error("Unknown error"+e);
+                    logger.error("error info:\n"+ e.getMessage());
+
                 }
 
             }
@@ -74,7 +85,6 @@ public class Client {
         chatScreen.setLayout(null);
         chatScreen.setVisible(true);
         chatScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
 
     }
 
@@ -98,9 +108,12 @@ public class Client {
                 try {
                     String msg=inputBox.getText();
                     out.writeUTF(name+": "+"\n"+msg);
+                } catch (UTFDataFormatException e) {
+                    logger.error("not supported input string");
                 } catch (IOException e) {
-                    e.printStackTrace();
-//                    logger.error("invalid character input or name");
+                    logger.error("socket error while send msg to server socket");
+                    logger.error("error info:\n"+e.getMessage());
+
                 }
             }
         });
@@ -179,7 +192,6 @@ class SocketListen extends Thread{
                 logger.debug("socket close");
                 break;
             } catch (IOException e) {
-                e.printStackTrace();
                 logger.error("input error from socket, exception: \n"+ e);
                 logger.debug("socket close");
                 break;
