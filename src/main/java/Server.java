@@ -1,6 +1,5 @@
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,9 +7,11 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.UTFDataFormatException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.LogManager;
 
 /**
  * Client.Main Class of Server app.
@@ -25,6 +26,7 @@ public class Server {
     public static DefaultListModel<Users> UsersList= new DefaultListModel<>();
     public static DefaultListModel<String> usersNameList= new DefaultListModel<>();
     public static DefaultListModel<String> log= new DefaultListModel<>();
+    private static Logger logger=LogManager.getLogger();
 
 
     /**
@@ -47,7 +49,7 @@ public class Server {
                         StartSocket(port);
                     } catch (NumberFormatException e) {
                         intro.setText("Error,Please try another port");
-                        e.printStackTrace();
+                        logger.error("Error, Please try another port"+e);
                     }
                 }else{
                     RestartSocket(996);
@@ -84,7 +86,7 @@ public class Server {
             Server.publicsocket.setSoTimeout(20000);
             Server.ComunicationScreen(socket);
         } catch (IOException e) {
-            e.printStackTrace();
+        e.printStackTrace();
         }
     }
 
@@ -102,7 +104,7 @@ public class Server {
 
         } catch (IOException e) {
             RestartSocket(portnumber+1);
-            e.printStackTrace();
+            logger.error("The port is busy"+e);
         }
     }
 
@@ -129,10 +131,11 @@ public class Server {
                 try {
                     textBox.setText("Waiting for client");
                     addUser();
-                    textBox.setText("State:Server online");
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                }
+                finally {
+                    textBox.setText("State:Server online");
                 }
             }
         });
@@ -163,7 +166,7 @@ public class Server {
             Users user = new Users(clientSocket, output, input);
             user.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Could not connect"+e);
         }
     }
 
@@ -200,6 +203,7 @@ public class Server {
         try {
             out.writeUTF(msg);
         } catch (IOException e) {
+            logger.error("Inactive port. It will be deleted");
             e.printStackTrace();
             UsersList.removeElement(user);
             usersNameList.removeElement(user.getUserName());
@@ -220,7 +224,7 @@ class Users extends Thread {
     private DataOutputStream out;
     private DataInputStream in;
     private String userName;
-
+    private static Logger logger = LogManager.getLogger("userName Server");
     /**
      * Builder.
      * register the user data.
@@ -234,10 +238,14 @@ class Users extends Thread {
         in=input;
         try {
             userName=in.readUTF();
+            logger=LogManager.getLogger(userName + "Server");
             Server.UsersList.addElement(this);
             Server.usersNameList.addElement(userName);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (UTFDataFormatException e) {
+            logger.error("No supported string"+e);
+        }
+        catch (IOException e){
+            logger.error("Possible port error, or unknown"+ e);
         }
 
     }
@@ -254,8 +262,10 @@ class Users extends Thread {
                 String msg=in.readUTF();
                 SendToServer(msg);
             } catch (Exception e) {
+                logger.error("Port error, or disconnected");
                 Server.UsersList.removeElement(this);
                 Server.usersNameList.removeElement(this.getUserName());
+                logger.debug("User was eliminated"+e);
             }
         }
     }
@@ -299,6 +309,7 @@ class Users extends Thread {
         try {
             Server.RecieveMsg(this,msg);
         } catch (IOException e) {
+            logger.error("Port error, or disconnected");
             e.printStackTrace();
             Server.UsersList.removeElement(this);
             Server.usersNameList.removeElement(this.getUserName());
